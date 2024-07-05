@@ -82,7 +82,7 @@ const removePasswordFromMessages = (messages) => {
 };
 
 app.get("/test", async (req, res) => {
-  return "testing route"
+  res.send({success: "test completed"})
 })
 
 app.post("/create-guide", verifyToken, async (req, res) => {
