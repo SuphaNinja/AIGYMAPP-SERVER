@@ -19,7 +19,7 @@ const openai = new OpenAI({
 });
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: 'https://aigymapp-client-wvix.vercel.app/',
   methods: ['GET', 'POST'],
   credentials: true,
 };
