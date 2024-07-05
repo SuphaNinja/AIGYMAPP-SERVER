@@ -24,6 +24,7 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 const adminKey = process.env.ADMIN_KEY;
 const trainerKey = process.env.TRAINER_KEY;
