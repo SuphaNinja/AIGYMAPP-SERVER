@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  firstName         String?
+  lastName          String?
+  userName          String?
+  email             String   @unique
+  role              String   @default("USER") // Can be "ADMIN", "TRAINER", or "USER"
+  password          String
+  profileImage      String?
+
+  trainerId         String?
+  trainer           User?    @relation("TrainerClients", fields: [trainerId], references: [id], onDelete: Cascade)
+  clients           User[]   @relation("TrainerClients")
+
+  guides            Guide[]
+  
+  cart              Cart?
+
+  sentMessages      Message[]  @relation("SentMessages")
+  receivedMessages  Message[] @relation("ReceivedMessages")
+}
+
+model Message {
+  id              String   @id @default(cuid())
+  content         String
+  createdAt       DateTime @default(now())
+  
+  senderId        String
+  sender          User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  recipientId     String
+  recipient       User     @relation("ReceivedMessages", fields: [recipientId], references: [id], onDelete: Cascade)
+}
+
+model Guide {
+  id               Int      @id @default(autoincrement())
+  tipsToReachGoal  String
+  days             Day[]
+  trainerId        String?
+  clientId         String
+  client           User     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}
+
+
+model Day {
+  id            Int            @id @default(autoincrement())
+  dayNumber     Int
+  guideId       Int
+  guide         Guide          @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  mealPlans     MealPlan[]
+  exercises     WorkoutExercise[]
+}
+
+model MealPlan {
+  id            Int              @id @default(autoincrement())
+  mealType      String
+  dayId         Int
+  day           Day              @relation(fields: [dayId], references: [id], onDelete: Cascade)
+  ingredients   Ingredient[]     
+}
+
+model Ingredient {
+  id            Int      @id @default(autoincrement())
+  name          String
+  grams         String
+  calories      String
+  mealPlanId    Int
+  mealPlan      MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+}
+
+
+
+model WorkoutExercise {
+  id             Int     @id @default(autoincrement())
+  exerciseName   String
+  time           String
+  burnedCalories String
+  dayId          Int
+  day            Day     @relation(fields: [dayId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  title         String
+  imageUrl      String
+  price         Float
+  rating        Float
+  quantity      String
+  special       Boolean    @default(false)
+  CartItem      CartItem[] 
+}
+
+model Cart {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cartItems     CartItem[]
+}
+
+model CartItem {
+  id            String   @id @default(cuid())
+  productId     String
+  cartId        String
+  quantity      Int
+  price         Int?
+
+  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  cart          Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, cartId])
+}
+
+
+
+
