@@ -81,6 +81,10 @@ const removePasswordFromMessages = (messages) => {
   }));
 };
 
+app.get("/test", async (req, res) => {
+  return "testing route"
+})
+
 app.post("/create-guide", verifyToken, async (req, res) => {
   const userId = req.userId;
   const { prompt, trainerId } = req.body;
