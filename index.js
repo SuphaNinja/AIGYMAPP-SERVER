@@ -8,23 +8,27 @@ const axios = require("axios");
 const { PrismaClient } = require("@prisma/client");
 const guideLines = require("./GuideLines.js");
 const dayOutput = require("./DayOutput.js");
+const { createClient } = require("@libsql/client") ;
+const { PrismaClient } = require("@prisma/client") ;
+const { PrismaLibSQL } = require("@prisma/adapter-libsql") ;
 
 const app = express();
 app.use(express.json());
 const port = 5050;
-const prisma = new PrismaClient();
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-const corsOptions = {
-  origin: 'https://aigymapp-client-wvix.vercel.app',
-  methods: ['GET', 'POST'],
-  credentials: true,
-};
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+const libsql = createClient({
+  url: process.env.TURSO_DATABASE_URL,
+  authToken: process.env.TURSO_AUTH_TOKEN,
+});
+
+const adapter = new PrismaLibSQL(libsql);
+const prisma = new PrismaClient({ adapter });
+
+app.use(cors());
 
 const adminKey = process.env.ADMIN_KEY;
 const trainerKey = process.env.TRAINER_KEY;
