@@ -9,7 +9,6 @@ const { PrismaClient } = require("@prisma/client");
 const guideLines = require("./GuideLines.js");
 const dayOutput = require("./DayOutput.js");
 const { createClient } = require("@libsql/client") ;
-const { PrismaClient } = require("@prisma/client") ;
 const { PrismaLibSQL } = require("@prisma/adapter-libsql") ;
 
 const app = express();
