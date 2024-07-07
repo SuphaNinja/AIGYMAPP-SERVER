@@ -809,9 +809,7 @@ app.post("/create-new-product", verifyToken, async (req, res) => {
     });
 
     if (!user) { return res.send({ error: "User not found!" }) };
-    if (user.role !== "TRAINER" || user.role !== "ADMIN") {
-      return res.send({ error: "Only admins and trainers can create new products" })
-    };
+    
 
     await prisma.product.create({
       data: {
