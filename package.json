@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "postinstall": "prisma generate",
+    "build": "prisma generate",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "@libsql/client": "^0.6.2",
     "@prisma/adapter-libsql": "^5.16.1",
